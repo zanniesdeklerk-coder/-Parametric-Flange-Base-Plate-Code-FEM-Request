@@ -6,7 +6,7 @@ In this project, I act as an external engineering consultant optimizing an indus
 
 ---
 
-## 🛠️ Project Architecture & Workflow
+##  Project Architecture & Workflow
 The repository contains the implementation of a full engineering pipeline from code to stress simulation verification:
 
 1. **Geometry Automation:** A Python macro (`ParametricFlangePlate.py`) that constructs an exact solid square plate equipped with a central hollow cylinder hub and 4 corner bolt holes.
@@ -17,7 +17,7 @@ The repository contains the implementation of a full engineering pipeline from c
 
 ---
 
-## 💻 Source Code: `ParametricFlangePlate.py`
+##  Source Code: `ParametricFlangePlate.py`
 
 This script programmatically generates the 3D manifold model inside FreeCAD. By shifting design dimensions into variables, it allows for instant geometry rescaling based on operational pressure spikes.
 
@@ -84,7 +84,7 @@ generate_flange_plate()
 
 ---
 
-## 📈 Finite Element Analysis (FEA) Simulation Report
+##  Finite Element Analysis (FEA) Simulation Report
 
 ### 1. Mesh & Boundary Configurations
 * **Material Properties:** Generic Structural Steel (Young's Modulus: 210 GPa, Poisson's Ratio: 0.30, Yield Strength: 250 MPa).
