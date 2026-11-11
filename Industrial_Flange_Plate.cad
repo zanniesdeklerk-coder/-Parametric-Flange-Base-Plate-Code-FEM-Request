@@ -1,1 +1,58 @@
+import FreeCAD as App
+import Part
 
+def generate_flange_plate():
+    # Close any existing document with the same name to avoid collisions
+    doc_name = "Industrial_Flange_Plate"
+    try:
+        App.closeDocument(doc_name)
+    except:
+        pass
+
+    doc = App.newDocument(doc_name)
+    
+    # --- DESIGN VARIATION PARAMETERS ---
+    plate_width = 200.0     # Square plate dimension (mm)
+    plate_thickness = 12.0  # Main plate thickness (mm)
+    
+    hub_radius = 50.0       # Central pipe outer radius (mm)
+    hub_inner_r = 40.0      # Central pipe inner radius (mm)
+    hub_height = 45.0       # Extrusion height of the hub (mm)
+    
+    bolt_hole_r = 10.0      # Corner mounting hole radius (mm)
+    hole_offset = 25.0      # Distance of bolt centers from edge (mm)
+
+    print("[INFO] Fabricating main mounting base plate...")
+    base_plate = Part.makeBox(plate_width, plate_width, plate_thickness)
+    base_plate.translate(App.Vector(-plate_width/2.0, -plate_width/2.0, 0.0))
+
+    print("[INFO] Constructing central manifold hub cylinder...")
+    outer_hub = Part.makeCylinder(hub_radius, hub_height)
+    inner_hub = Part.makeCylinder(hub_inner_r, hub_height)
+    hollow_hub = outer_hub.cut(inner_hub)
+    
+    combined_body = base_plate.fuse(hollow_hub)
+
+    print("[INFO] Boring corner structural bolt holes...")
+    pos_x = (plate_width / 2.0) - hole_offset
+    pos_y = (plate_width / 2.0) - hole_offset
+    
+    hole_coordinates = [
+        App.Vector(pos_x, pos_y, -1.0),
+        App.Vector(-pos_x, pos_y, -1.0),
+        App.Vector(pos_x, -pos_y, -1.0),
+        App.Vector(-pos_x, -pos_y, -1.0)
+    ]
+
+    for coords in hole_coordinates:
+        drill_bit = Part.makeCylinder(bolt_hole_r, plate_thickness + 2.0)
+        drill_bit.translate(coords)
+        combined_body = combined_body.cut(drill_bit)
+
+    structural_part = doc.addObject("Part::Feature", "Manifold_Flange_Plate")
+    structural_part.Shape = combined_body
+
+    doc.recompute()
+    print("[SUCCESS] Parametric structure generated cleanly for structural analysis.")
+
+generate_flange_plate()
